@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cafe FLO Design System - Warm, Elegant, Cozy Café Aesthetic */
+
+@layer base {
+  :root {
+    /* Warm cream background inspired by café ambiance */
+    --background: 40 30% 96%;
+    --foreground: 25 30% 15%;
+
+    /* Card styling */
+    --card: 40 25% 98%;
+    --card-foreground: 25 30% 15%;
+
+    --popover: 40 25% 98%;
+    --popover-foreground: 25 30% 15%;
+
+    /* Primary: Rich coffee brown */
+    --primary: 25 35% 25%;
+    --primary-foreground: 40 30% 96%;
+
+    /* Secondary: Warm yellow from building facade */
+    --secondary: 45 75% 70%;
+    --secondary-foreground: 25 35% 20%;
+
+    /* Muted tones */
+    --muted: 40 20% 90%;
+    --muted-foreground: 25 15% 45%;
+
+    /* Accent: Café red from umbrellas */
+    --accent: 0 65% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 40 20% 85%;
+    --input: 40 20% 85%;
+    --ring: 25 35% 25%;
+
+    --radius: 0.75rem;
+
+    /* Custom café colors */
+    --cafe-brown: 25 35% 25%;
+    --cafe-yellow: 45 75% 70%;
+    --cafe-red: 0 65% 45%;
+    --cream: 40 30% 96%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 25 30% 10%;
+    --foreground: 40 30% 96%;
+
+    --card: 25 25% 15%;
+    --card-foreground: 40 30% 96%;
+
+    --popover: 25 25% 15%;
+    --popover-foreground: 40 30% 96%;
+
+    --primary: 45 75% 70%;
+    --primary-foreground: 25 35% 15%;
+
+    --secondary: 25 25% 20%;
+    --secondary-foreground: 40 30% 96%;
+
+    --muted: 25 20% 20%;
+    --muted-foreground: 40 20% 65%;
+
+    --accent: 0 65% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 25 20% 25%;
+    --input: 25 20% 25%;
+    --ring: 45 75% 70%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Lato', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer utilities {
+  .font-serif {
+    font-family: 'Playfair Display', serif;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
