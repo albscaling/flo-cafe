@@ -12,6 +12,11 @@ import menuDrinks from '@/assets/menu-drinks.jpeg';
 import menuFood from '@/assets/menu-food.jpeg';
 import menuSpecial from '@/assets/menu-special.jpeg';
 import menuCover from '@/assets/menu-cover.jpg';
+import drinks from '@/assets/drinks.jpeg';
+import beers from '@/assets/beers.png';
+import cocktailsImg from '@/assets/cocktails.jpeg';
+import specialty from '@/assets/specialty.jpeg';
+import energyDrinksImg from '@/assets/energy-drinks.jpeg';
 
 interface MenuItemProps {
   nameAl: string;
@@ -350,7 +355,7 @@ const Menu = () => {
                     icon={Coffee} 
                     title="Pije Freskuese" 
                     titleEn="Refreshing Drinks"
-                    backgroundImage={menuDrinks}
+                    backgroundImage={drinks}
                     delay={0.1}
                   >
                     {refreshing.map((item, index) => (
@@ -369,7 +374,7 @@ const Menu = () => {
                     icon={Wine} 
                     title="Birra" 
                     titleEn="Beer"
-                    backgroundImage={menuDrinks}
+                    backgroundImage={beers}
                     delay={0.15}
                   >
                     {beer.map((item, index) => (
@@ -388,7 +393,7 @@ const Menu = () => {
                     icon={Wine} 
                     title="Pije Energjie" 
                     titleEn="Energy Drinks"
-                    backgroundImage={menuDrinks}
+                    backgroundImage={energyDrinksImg}
                     delay={0.2}
                   >
                     {energyDrinks.map((item, index) => (
@@ -407,7 +412,7 @@ const Menu = () => {
                     icon={Wine} 
                     title="Kokteje" 
                     titleEn="Cocktails"
-                    backgroundImage={menuDrinks}
+                    backgroundImage={cocktailsImg}
                     delay={0.25}
                   >
                     {cocktails.map((item, index) => (
@@ -426,7 +431,7 @@ const Menu = () => {
                     icon={Cake} 
                     title="Ëmbëlsira FLO" 
                     titleEn="FLO Desserts"
-                    backgroundImage={menuDessert}
+                    backgroundImage={specialty}
                     delay={0.3}
                   >
                     {floDesserts.map((item, index) => (
