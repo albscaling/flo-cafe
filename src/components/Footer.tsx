@@ -68,6 +68,17 @@ const Footer = () => {
 
         <div className="border-t border-cream/20 pt-6 text-center text-sm text-cream/60">
           <p>© {new Date().getFullYear()} Cafe & Pasticeri FLO. {t('allRights')}.</p>
+          <p className="mt-2">
+            Powered by{' '}
+            <a
+              href="https://albscaling.al"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cafe-yellow hover:text-white transition-colors font-semibold"
+            >
+              Albscaling
+            </a>
+          </p>
         </div>
       </div>
     </footer>
