@@ -16,7 +16,7 @@ import drinks from '@/assets/drinks.jpeg';
 import beers from '@/assets/beers.png';
 import cocktailsImg from '@/assets/cocktails.jpeg';
 import specialty from '@/assets/specialty.jpeg';
-import energyDrinksImg from '@/assets/energy-drinks.jpeg';
+import energyDrinksImg from '@/assets/energydrink.jpg';
 
 interface MenuItemProps {
   nameAl: string;
@@ -391,7 +391,7 @@ const Menu = () => {
                   {/* Energy Drinks */}
                   <MenuSection 
                     icon={Wine} 
-                    title="Pije Energjie" 
+                    title="Pije Energjike" 
                     titleEn="Energy Drinks"
                     backgroundImage={energyDrinksImg}
                     delay={0.2}

@@ -33,16 +33,10 @@ const Index = () => {
   ];
 
   const popularItems = [
-    { name: 'espresso', price: '100 L', icon: Coffee },
-    { name: 'cappuccino', price: '150 L', icon: Coffee },
-    { name: 'trilece', price: '200 L', icon: Cake },
-    { name: 'baklava', price: '180 L', icon: Cake },
-  ];
-
-  const testimonials = [
-    { key: 'testimonial1', author: 'Maria K.' },
-    { key: 'testimonial2', author: 'John D.' },
-    { key: 'testimonial3', author: 'Ana B.' },
+    { nameAl: 'Kapucino', nameEn: 'Cappuccino', price: '150 L', icon: Coffee },
+    { nameAl: 'Tiramisu', nameEn: 'Tiramisu', price: '200 L', icon: Cake },
+    { nameAl: 'Banana Split', nameEn: 'Banana Split', price: '400 L', icon: Cake },
+    { nameAl: 'Margarita', nameEn: 'Margarita', price: '450 L', icon: Coffee },
   ];
 
   return (
@@ -208,9 +202,9 @@ const Index = () => {
             whileInView="animate"
             viewport={{ once: true }}
           >
-            {popularItems.map(({ name, price, icon: Icon }) => (
+            {popularItems.map(({ nameAl, nameEn, price, icon: Icon }) => (
               <motion.div
-                key={name}
+                key={nameAl}
                 className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow"
                 variants={fadeInUp}
                 whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
@@ -219,10 +213,10 @@ const Index = () => {
                   <Icon className="text-cafe-red" size={24} />
                 </div>
                 <h3 className="font-serif text-lg font-bold text-cafe-brown">
-                  {t(name)}
+                  {nameAl}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-2">
-                  {t(`${name}Desc`)}
+                  {nameEn}
                 </p>
                 <p className="text-cafe-red font-bold">{price}</p>
               </motion.div>
@@ -246,48 +240,6 @@ const Index = () => {
                 <ArrowRight size={18} />
               </Link>
             </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 bg-cafe-brown text-white">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">
-              {t('whatPeopleSay')}
-            </h2>
-            <div className="w-24 h-1 bg-cafe-yellow mx-auto"></div>
-          </motion.div>
-
-          <motion.div 
-            className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-          >
-            {testimonials.map(({ key, author }) => (
-              <motion.div
-                key={key}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-8"
-                variants={fadeInUp}
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={18} className="fill-cafe-yellow text-cafe-yellow" />
-                  ))}
-                </div>
-                <p className="text-white/90 italic mb-4">"{t(key)}"</p>
-                <p className="font-semibold text-cafe-yellow">{author}</p>
-              </motion.div>
-            ))}
           </motion.div>
         </div>
       </section>
