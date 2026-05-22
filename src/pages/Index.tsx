@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { motion } from 'framer-motion';        </motion.div>
-
-        {/* Scroll Indicator Removed */}
-      </section>m, Facebook, MapPin, Clock, Coffee, Cake, Users, Star, ArrowRight, Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Instagram, Facebook, MapPin, Clock, Coffee, Cake, Users, Star, ArrowRight, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
