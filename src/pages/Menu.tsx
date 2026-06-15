@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Coffee, Wine, Cake, IceCream, Sandwich, Sparkles, ChevronDown, Zap } from 'lucide-react';
+import {
+  Coffee, Wine, Cake, IceCream, Sandwich, Sparkles,
+  ChevronDown, Zap, ChevronLeft, ChevronRight, X,
+} from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 // Section hero images
 import menuCoffee from '@/assets/menu-coffee.jpeg';
+import menuDrinks from '@/assets/menu-drinks.jpeg';
 import menuFood from '@/assets/menu-food.jpeg';
 import menuCover from '@/assets/menu-cover.jpg';
 import drinks from '@/assets/drinks.jpeg';
@@ -83,29 +87,95 @@ const PriceRow = ({ nameAl, nameEn, price, i }: { nameAl: string; nameEn: string
   </motion.div>
 );
 
-/* ── Photo gallery strip (Our Creations style) ───────────────────── */
-const PhotoStrip = ({ images }: { images: string[] }) => (
-  <div
-    className="flex gap-3 overflow-x-auto pb-1 snap-x snap-mandatory"
-    style={{ scrollbarWidth: 'none' }}
-  >
-    {images.map((src, i) => (
-      <motion.div
-        key={i}
-        className="flex-shrink-0 w-36 rounded-2xl overflow-hidden snap-start shadow-sm"
-        style={{ height: 210 }}
-        initial={{ opacity: 0, scale: 0.93 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, delay: i * 0.05 }}
-        viewport={{ once: true }}
-      >
-        <img src={src} alt="" className="w-full h-full object-cover" />
-      </motion.div>
-    ))}
-  </div>
-);
+/* ── Photo strip with arrows + tap-to-fullscreen ─────────────────── */
+const PhotoStrip = ({ images }: { images: string[] }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
 
-/* ── Drink section: banner image + price list ────────────────────── */
+  const scroll = (dir: 'left' | 'right') => {
+    scrollRef.current?.scrollBy({ left: dir === 'left' ? -160 : 160, behavior: 'smooth' });
+  };
+
+  return (
+    <>
+      {/* Fullscreen lightbox */}
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightbox(null)}
+          >
+            <button
+              className="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              onClick={() => setLightbox(null)}
+            >
+              <X size={20} />
+            </button>
+            <motion.img
+              src={lightbox}
+              alt=""
+              className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
+              initial={{ scale: 0.88, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.88, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={e => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Strip */}
+      <div className="relative">
+        {/* Left arrow */}
+        <button
+          onClick={() => scroll('left')}
+          aria-label="scroll left"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white shadow-md rounded-full flex items-center justify-center text-cafe-brown hover:bg-cafe-yellow transition-colors"
+        >
+          <ChevronLeft size={18} />
+        </button>
+
+        {/* Scrollable row */}
+        <div
+          ref={scrollRef}
+          className="flex gap-3 overflow-x-auto pb-1 snap-x snap-mandatory px-11"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {images.map((src, i) => (
+            <motion.button
+              key={i}
+              className="flex-shrink-0 w-36 rounded-2xl overflow-hidden snap-start shadow-sm focus:outline-none"
+              style={{ height: 210 }}
+              onClick={() => setLightbox(src)}
+              initial={{ opacity: 0, scale: 0.93 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.03 }}
+            >
+              <img src={src} alt="" className="w-full h-full object-cover pointer-events-none" />
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Right arrow */}
+        <button
+          onClick={() => scroll('right')}
+          aria-label="scroll right"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white shadow-md rounded-full flex items-center justify-center text-cafe-brown hover:bg-cafe-yellow transition-colors"
+        >
+          <ChevronRight size={18} />
+        </button>
+      </div>
+    </>
+  );
+};
+
+/* ── Drink section: banner + price list ──────────────────────────── */
 const DrinkSection = ({ id, Icon, title, titleEn, hero, items }: {
   id: string;
   Icon: React.ElementType;
@@ -151,7 +221,6 @@ const VisualSection = ({ id, Icon, title, titleEn, photos, items }: {
   items: MenuItemData[];
 }) => (
   <div id={id} className="space-y-4 scroll-mt-32">
-    {/* Header */}
     <motion.div
       className="flex items-center gap-3"
       initial={{ opacity: 0, x: -16 }}
@@ -168,10 +237,8 @@ const VisualSection = ({ id, Icon, title, titleEn, photos, items }: {
       </div>
     </motion.div>
 
-    {/* Photo strip */}
     <PhotoStrip images={photos} />
 
-    {/* Full price list */}
     <div className="bg-white rounded-2xl px-5 py-4 shadow-sm">
       {items.map((it, i) => <PriceRow key={it.nameAl} {...it} i={i} />)}
     </div>
@@ -303,10 +370,14 @@ const Menu = () => {
     { nameAl: 'Tost Flo', nameEn: 'Flo Toast', price: '180 L' },
   ];
 
-  // ── Photo gallery assignments (all 26 images distributed by section) ─
-  const iceCoffeePhotos  = [img9897, img9898, img9902, img9908, img9908_2];
+  // ── Photo assignments ────────────────────────────────────────────
+  // Divider strip: café atmosphere shots (drinks served in decorative glasses)
+  const dividerPhotos     = [img9897, img9898, img9902, img9908, img9908_2];
+  // FLO Desserts: tiramisu, lotus cups, kadaif, strawberry layered desserts
   const floDessertsPhotos = [img9888, img9889, img9891, img9912, img9914, img9925, img9926, img9931, img9935];
-  const specialPhotos    = [img9929, img9929_2, img9938, img9940, img9950, img9951, img9955, img9969, img9971, img9985];
+  // Special Desserts: oreo cups, mousse domes, coconut, red velvet cakes
+  const specialPhotos     = [img9929, img9929_2, img9938, img9940, img9950, img9951, img9955, img9969, img9971, img9985];
+  // FLO Specialities: banana split
   const specialitiesPhotos = [img9847, img9860];
 
   return (
@@ -426,117 +497,43 @@ const Menu = () => {
             {/* ── Menu sections ──────────────────────────────────────── */}
             <div className="container mx-auto px-4 py-10 max-w-2xl space-y-10">
 
-              {/* ── Drinks ─────────────────────────────────────────── */}
-              <DrinkSection
-                id="kafeteria"
-                Icon={Coffee}
-                title="Kafeteria"
-                titleEn="Coffee & Tea"
-                hero={menuCoffee}
-                items={kafeteria}
-              />
+              {/* Drinks — plain banner + list */}
+              <DrinkSection id="kafeteria"  Icon={Coffee}   title="Kafeteria"      titleEn="Coffee & Tea"      hero={menuCoffee}      items={kafeteria}    />
+              <DrinkSection id="ice-coffee" Icon={Coffee}   title="Kafe me Akull"  titleEn="Iced Coffee"       hero={menuDrinks}      items={iceCoffee}    />
+              <DrinkSection id="refreshing" Icon={Wine}     title="Pije Freskuese" titleEn="Refreshing Drinks" hero={drinks}          items={refreshing}   />
+              <DrinkSection id="beer"       Icon={Wine}     title="Birra"          titleEn="Beer"              hero={beers}           items={beer}         />
+              <DrinkSection id="energy"     Icon={Zap}      title="Pije Energjike" titleEn="Energy Drinks"     hero={energyDrinksImg} items={energyDrinks} />
+              <DrinkSection id="cocktails"  Icon={Wine}     title="Kokteje"        titleEn="Cocktails"         hero={cocktailsImg}    items={cocktails}    />
 
-              <VisualSection
-                id="ice-coffee"
-                Icon={Coffee}
-                title="Kafe me Akull"
-                titleEn="Iced Coffee"
-                photos={iceCoffeePhotos}
-                items={iceCoffee}
-              />
-
-              <DrinkSection
-                id="refreshing"
-                Icon={Wine}
-                title="Pije Freskuese"
-                titleEn="Refreshing Drinks"
-                hero={drinks}
-                items={refreshing}
-              />
-
-              <DrinkSection
-                id="beer"
-                Icon={Wine}
-                title="Birra"
-                titleEn="Beer"
-                hero={beers}
-                items={beer}
-              />
-
-              <DrinkSection
-                id="energy"
-                Icon={Zap}
-                title="Pije Energjike"
-                titleEn="Energy Drinks"
-                hero={energyDrinksImg}
-                items={energyDrinks}
-              />
-
-              <DrinkSection
-                id="cocktails"
-                Icon={Wine}
-                title="Kokteje"
-                titleEn="Cocktails"
-                hero={cocktailsImg}
-                items={cocktails}
-              />
-
-              {/* ── Divider ─────────────────────────────────────────── */}
+              {/* ── Krijimet Tona divider with scrollable photo strip ── */}
               <motion.div
-                className="flex items-center gap-4"
+                className="space-y-4"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                <div className="flex-1 h-px bg-stone-300" />
-                <span className="text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
-                  Krijimet Tona · Our Creations
-                </span>
-                <div className="flex-1 h-px bg-stone-300" />
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 h-px bg-stone-300" />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                    Krijimet Tona · Our Creations
+                  </span>
+                  <div className="flex-1 h-px bg-stone-300" />
+                </div>
+                <PhotoStrip images={dividerPhotos} />
               </motion.div>
 
-              {/* ── Desserts ─────────────────────────────────────────── */}
-              <VisualSection
-                id="flo-desserts"
-                Icon={Cake}
-                title="Ëmbëlsira FLO"
-                titleEn="FLO Desserts"
-                photos={floDessertsPhotos}
-                items={floDesserts}
-              />
+              {/* Desserts — photo strip + full price list */}
+              <VisualSection id="flo-desserts" Icon={Cake}     title="Ëmbëlsira FLO"     titleEn="FLO Desserts"     photos={floDessertsPhotos}  items={floDesserts}     />
+              <VisualSection id="special"       Icon={Sparkles} title="Ëmbëlsira Speciale" titleEn="Special Desserts"  photos={specialPhotos}      items={specialDesserts} />
+              <VisualSection id="specialities"  Icon={IceCream} title="Specialitetet FLO"  titleEn="FLO Specialities" photos={specialitiesPhotos}  items={floSpecialities} />
 
-              <VisualSection
-                id="special"
-                Icon={Sparkles}
-                title="Ëmbëlsira Speciale"
-                titleEn="Special Desserts"
-                photos={specialPhotos}
-                items={specialDesserts}
-              />
-
-              <VisualSection
-                id="specialities"
-                Icon={IceCream}
-                title="Specialitetet FLO"
-                titleEn="FLO Specialities"
-                photos={specialitiesPhotos}
-                items={floSpecialities}
-              />
-
-              {/* ── Food ─────────────────────────────────────────────── */}
-              <DrinkSection
-                id="food"
-                Icon={Sandwich}
-                title="Piadine & Sandwich"
-                titleEn="Piadine & Sandwich"
-                hero={menuFood}
-                items={piadines}
-              />
+              {/* Food */}
+              <DrinkSection id="food" Icon={Sandwich} title="Piadine & Sandwich" titleEn="Piadine & Sandwich" hero={menuFood} items={piadines} />
 
             </div>
 
-            {/* CTA section */}
+            {/* CTA */}
             <motion.section
               className="py-16 bg-cafe-brown text-white text-center relative overflow-hidden"
               initial={{ opacity: 0 }}
