@@ -1,103 +1,192 @@
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Coffee, Wine, Cake, IceCream, Sandwich, Sparkles, ChevronDown } from 'lucide-react';
+import { Coffee, Wine, Cake, IceCream, Sandwich, Sparkles, ChevronDown, Zap } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-// Import background images
+// Section hero images
 import menuCoffee from '@/assets/menu-coffee.jpeg';
-import menuDessert from '@/assets/menu-dessert.jpeg';
-import menuDrinks from '@/assets/menu-drinks.jpeg';
 import menuFood from '@/assets/menu-food.jpeg';
-import menuSpecial from '@/assets/menu-special.jpeg';
 import menuCover from '@/assets/menu-cover.jpg';
 import drinks from '@/assets/drinks.jpeg';
 import beers from '@/assets/beers.png';
 import cocktailsImg from '@/assets/cocktails.jpeg';
-import specialty from '@/assets/specialty.jpeg';
 import energyDrinksImg from '@/assets/energydrink.jpg';
 
-interface MenuItemProps {
-  nameAl: string;
-  nameEn: string;
-  price: string;
-  index: number;
-}
+// All 26 product photos
+import img9847 from '@/assets/IMG_9847.jpg';
+import img9860 from '@/assets/IMG_9860.jpg';
+import img9888 from '@/assets/IMG_9888.jpg';
+import img9889 from '@/assets/IMG_9889.jpg';
+import img9891 from '@/assets/IMG_9891.jpg';
+import img9897 from '@/assets/IMG_9897.jpg';
+import img9898 from '@/assets/IMG_9898.jpg';
+import img9902 from '@/assets/IMG_9902.jpg';
+import img9908 from '@/assets/IMG_9908.jpg';
+import img9908_2 from '@/assets/IMG_9908-2.jpg';
+import img9912 from '@/assets/IMG_9912.jpg';
+import img9914 from '@/assets/IMG_9914.jpg';
+import img9925 from '@/assets/IMG_9925.jpg';
+import img9926 from '@/assets/IMG_9926.jpg';
+import img9929 from '@/assets/IMG_9929.jpg';
+import img9929_2 from '@/assets/IMG_9929-2.jpg';
+import img9931 from '@/assets/IMG_9931.jpg';
+import img9935 from '@/assets/IMG_9935.jpg';
+import img9938 from '@/assets/IMG_9938.jpg';
+import img9940 from '@/assets/IMG_9940.jpg';
+import img9950 from '@/assets/IMG_9950.jpg';
+import img9951 from '@/assets/IMG_9951.jpg';
+import img9955 from '@/assets/IMG_9955.jpg';
+import img9969 from '@/assets/IMG_9969.jpg';
+import img9971 from '@/assets/IMG_9971.jpg';
+import img9985 from '@/assets/IMG_9985.jpg';
 
-const MenuItem = ({ nameAl, nameEn, price, index }: MenuItemProps) => (
-  <motion.div 
-    className="group flex justify-between items-center py-3 px-4 rounded-lg hover:bg-white/10 transition-colors border-b border-white/10 last:border-b-0"
-    initial={{ opacity: 0, x: -20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.3, delay: index * 0.02 }}
+/* ── Types ────────────────────────────────────────────────────────── */
+type MenuItemData = { nameAl: string; nameEn: string; price: string };
+
+/* ── Nav config ──────────────────────────────────────────────────── */
+const NAV = [
+  { id: 'kafeteria',    label: 'Kafe',         Icon: Coffee   },
+  { id: 'ice-coffee',   label: 'Kafe Akull',   Icon: Coffee   },
+  { id: 'refreshing',   label: 'Freskuese',    Icon: Wine     },
+  { id: 'beer',         label: 'Birra',        Icon: Wine     },
+  { id: 'energy',       label: 'Energjike',    Icon: Zap      },
+  { id: 'cocktails',    label: 'Kokteje',      Icon: Wine     },
+  { id: 'flo-desserts', label: 'Ëmbëlsira',    Icon: Cake     },
+  { id: 'special',      label: 'Speciale',     Icon: Sparkles },
+  { id: 'specialities', label: 'Specialitete', Icon: IceCream },
+  { id: 'food',         label: 'Ushqim',       Icon: Sandwich },
+];
+
+const scrollTo = (id: string) =>
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+/* ── Price row ───────────────────────────────────────────────────── */
+const PriceRow = ({ nameAl, nameEn, price, i }: { nameAl: string; nameEn: string; price: string; i: number }) => (
+  <motion.div
+    className="flex items-center gap-3 py-3 border-b border-stone-100 last:border-0"
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
+    transition={{ duration: 0.3, delay: i * 0.02 }}
     viewport={{ once: true }}
   >
-    <div className="flex-1">
-      <h4 className="font-serif text-lg font-semibold text-white group-hover:text-cafe-yellow transition-colors">
-        {nameAl}
-      </h4>
-      <p className="text-sm text-white/70 italic">{nameEn}</p>
+    <div className="flex-1 min-w-0">
+      <span className="font-medium text-stone-800 text-sm">{nameAl}</span>
+      {nameEn !== nameAl && (
+        <span className="text-stone-400 text-xs italic ml-2">{nameEn}</span>
+      )}
     </div>
-    <span className="text-cafe-yellow font-bold text-lg whitespace-nowrap ml-4">{price}</span>
+    <span className="font-bold text-cafe-brown text-sm tabular-nums whitespace-nowrap flex-shrink-0">
+      {price}
+    </span>
   </motion.div>
 );
 
-interface MenuSectionProps {
-  icon: React.ElementType;
+/* ── Photo gallery strip (Our Creations style) ───────────────────── */
+const PhotoStrip = ({ images }: { images: string[] }) => (
+  <div
+    className="flex gap-3 overflow-x-auto pb-1 snap-x snap-mandatory"
+    style={{ scrollbarWidth: 'none' }}
+  >
+    {images.map((src, i) => (
+      <motion.div
+        key={i}
+        className="flex-shrink-0 w-36 rounded-2xl overflow-hidden snap-start shadow-sm"
+        style={{ height: 210 }}
+        initial={{ opacity: 0, scale: 0.93 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: i * 0.05 }}
+        viewport={{ once: true }}
+      >
+        <img src={src} alt="" className="w-full h-full object-cover" />
+      </motion.div>
+    ))}
+  </div>
+);
+
+/* ── Drink section: banner image + price list ────────────────────── */
+const DrinkSection = ({ id, Icon, title, titleEn, hero, items }: {
+  id: string;
+  Icon: React.ElementType;
   title: string;
   titleEn: string;
-  backgroundImage: string;
-  children: React.ReactNode;
-  delay?: number;
-  darkerOverlay?: boolean;
-  bgPosition?: string;
-}
-
-const MenuSection = ({ icon: Icon, title, titleEn, backgroundImage, children, delay = 0, darkerOverlay = false, bgPosition = 'center' }: MenuSectionProps) => (
-  <motion.div 
-    className="relative rounded-3xl overflow-hidden shadow-2xl"
-    initial={{ opacity: 0, y: 30 }}
+  hero: string;
+  items: MenuItemData[];
+}) => (
+  <motion.div
+    id={id}
+    className="bg-white rounded-3xl overflow-hidden shadow-md scroll-mt-32"
+    initial={{ opacity: 0, y: 28 }}
     whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay }}
+    transition={{ duration: 0.5 }}
     viewport={{ once: true }}
   >
-    {/* Background Image with Overlay */}
-    <div 
-      className="absolute inset-0 bg-cover"
-      style={{ backgroundImage: `url(${backgroundImage})`, backgroundPosition: bgPosition }}
-    />
-    <div className={`absolute inset-0 ${darkerOverlay ? 'bg-gradient-to-b from-black/90 via-black/85 to-black/95' : 'bg-gradient-to-b from-black/80 via-black/70 to-black/85'}`} />
-    
-    {/* Content */}
-    <div className="relative z-10">
-      {/* Header */}
-      <div className="px-6 py-6 border-b border-white/20">
-        <div className="flex items-center gap-3">
-          <motion.div 
-            className="w-14 h-14 bg-cafe-yellow/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-cafe-yellow/30"
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Icon className="text-cafe-yellow" size={28} />
-          </motion.div>
-          <div>
-            <h3 className="font-serif text-2xl font-bold text-white">{title}</h3>
-            <p className="text-cafe-yellow/80 text-sm italic">{titleEn}</p>
-          </div>
+    <div className="relative h-44 overflow-hidden">
+      <img src={hero} alt={title} className="w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/10" />
+      <div className="absolute inset-0 flex items-center px-5 gap-3">
+        <div className="w-11 h-11 rounded-full bg-cafe-yellow flex items-center justify-center flex-shrink-0 shadow-md">
+          <Icon className="text-cafe-brown" size={20} />
+        </div>
+        <div>
+          <h3 className="font-serif text-2xl font-bold text-white leading-tight">{title}</h3>
+          <p className="text-cafe-yellow text-xs italic">{titleEn}</p>
         </div>
       </div>
-      {/* Items */}
-      <div className="p-4">{children}</div>
+    </div>
+    <div className="px-5 py-5">
+      {items.map((it, i) => <PriceRow key={it.nameAl} {...it} i={i} />)}
     </div>
   </motion.div>
 );
 
+/* ── Visual section: header + photo strip + price list ───────────── */
+const VisualSection = ({ id, Icon, title, titleEn, photos, items }: {
+  id: string;
+  Icon: React.ElementType;
+  title: string;
+  titleEn: string;
+  photos: string[];
+  items: MenuItemData[];
+}) => (
+  <div id={id} className="space-y-4 scroll-mt-32">
+    {/* Header */}
+    <motion.div
+      className="flex items-center gap-3"
+      initial={{ opacity: 0, x: -16 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4 }}
+      viewport={{ once: true }}
+    >
+      <div className="w-12 h-12 rounded-2xl bg-cafe-brown flex items-center justify-center flex-shrink-0 shadow-md">
+        <Icon className="text-cafe-yellow" size={22} />
+      </div>
+      <div>
+        <h3 className="font-serif text-2xl font-bold text-cafe-brown leading-tight">{title}</h3>
+        <p className="text-stone-400 text-xs italic">{titleEn}</p>
+      </div>
+    </motion.div>
+
+    {/* Photo strip */}
+    <PhotoStrip images={photos} />
+
+    {/* Full price list */}
+    <div className="bg-white rounded-2xl px-5 py-4 shadow-sm">
+      {items.map((it, i) => <PriceRow key={it.nameAl} {...it} i={i} />)}
+    </div>
+  </div>
+);
+
+/* ── Main component ──────────────────────────────────────────────── */
 const Menu = () => {
   const { t } = useLanguage();
   const [showMenu, setShowMenu] = useState(false);
+  const [activeTab, setActiveTab] = useState('kafeteria');
 
-  const kafeteria = [
+  // ── Menu data ────────────────────────────────────────────────────
+
+  const kafeteria: MenuItemData[] = [
     { nameAl: 'Kafe', nameEn: 'Coffee', price: '80 L' },
     { nameAl: 'Kafe Turke', nameEn: 'Turkish Coffee', price: '80 L' },
     { nameAl: 'Makiato', nameEn: 'Macchiato', price: '90 L' },
@@ -112,7 +201,7 @@ const Menu = () => {
     { nameAl: 'Frape', nameEn: 'Frappe', price: '180 L' },
   ];
 
-  const iceCoffee = [
+  const iceCoffee: MenuItemData[] = [
     { nameAl: 'Frappe Ice Coffee', nameEn: 'Frappe Ice Coffee', price: '180 L' },
     { nameAl: 'Fredocino', nameEn: 'Fredocino', price: '230 L' },
     { nameAl: 'Milkshake', nameEn: 'Milkshake', price: '250 L' },
@@ -120,7 +209,7 @@ const Menu = () => {
     { nameAl: 'Choco Frappuccino', nameEn: 'Choco Frappuccino', price: '230 L' },
   ];
 
-  const refreshing = [
+  const refreshing: MenuItemData[] = [
     { nameAl: 'Bravo', nameEn: 'Bravo', price: '170 L' },
     { nameAl: 'My Tea', nameEn: 'My Tea', price: '170 L' },
     { nameAl: 'Café Mio', nameEn: 'Café Mio', price: '300 L' },
@@ -131,7 +220,7 @@ const Menu = () => {
     { nameAl: 'Rose Lemonade', nameEn: 'Rose Lemonade', price: '350 L' },
   ];
 
-  const beer = [
+  const beer: MenuItemData[] = [
     { nameAl: 'Tuborg', nameEn: 'Tuborg', price: '250 L' },
     { nameAl: 'Heiniken', nameEn: 'Heineken', price: '300 L' },
     { nameAl: 'Corona', nameEn: 'Corona', price: '400 L' },
@@ -142,14 +231,14 @@ const Menu = () => {
     { nameAl: 'Paulaner', nameEn: 'Paulaner', price: '400 L' },
   ];
 
-  const energyDrinks = [
+  const energyDrinks: MenuItemData[] = [
     { nameAl: 'Red Bull Energy Drink', nameEn: 'Red Bull Energy Drink', price: '250 L' },
     { nameAl: 'Red Bull Zero', nameEn: 'Red Bull Zero', price: '250 L' },
     { nameAl: 'Red Bull Red Edition', nameEn: 'Red Bull Red Edition', price: '250 L' },
     { nameAl: 'Red Bull Green Edition', nameEn: 'Red Bull Green Edition', price: '250 L' },
   ];
 
-  const cocktails = [
+  const cocktails: MenuItemData[] = [
     { nameAl: 'Margarita', nameEn: 'Margarita', price: '450 L' },
     { nameAl: 'Aperol Spritz', nameEn: 'Aperol Spritz', price: '450 L' },
     { nameAl: 'Mojito', nameEn: 'Mojito', price: '450 L' },
@@ -161,7 +250,7 @@ const Menu = () => {
     { nameAl: 'Cuba Libre', nameEn: 'Cuba Libre', price: '450 L' },
   ];
 
-  const floDesserts = [
+  const floDesserts: MenuItemData[] = [
     { nameAl: 'Cheesecake', nameEn: 'Cheesecake', price: '280 L' },
     { nameAl: 'Tiramisu', nameEn: 'Tiramisu', price: '200 L' },
     { nameAl: 'Trilece', nameEn: 'Trilece', price: '180 L' },
@@ -175,7 +264,7 @@ const Menu = () => {
     { nameAl: 'Vullkan Luleshtrydhe', nameEn: 'Strawberry Volcano', price: '300 L' },
   ];
 
-  const specialDesserts = [
+  const specialDesserts: MenuItemData[] = [
     { nameAl: 'Oreo', nameEn: 'Oreo', price: '280 L' },
     { nameAl: 'Çokollatë Vanilje', nameEn: 'Choco Vanilla', price: '280 L' },
     { nameAl: 'Kiss', nameEn: 'Kiss', price: '280 L' },
@@ -190,18 +279,18 @@ const Menu = () => {
     { nameAl: 'Tortë Boronicë', nameEn: 'Blueberry Cake', price: '280 L' },
   ];
 
-  const floSpecialities = [
+  const floSpecialities: MenuItemData[] = [
     { nameAl: 'Banana Split', nameEn: 'Banana Split', price: '400 L' },
     { nameAl: 'Kupë Frutash', nameEn: 'Fruit Cup', price: '350 L' },
     { nameAl: 'Kupë Arash', nameEn: 'Nut Cup', price: '350 L' },
-    { nameAl: 'Akullore (çdo zgjedhje - e Madhe 3 toptha)', nameEn: 'Ice Cream of Any Choice (Large 3 Scoops)', price: '240 L' },
-    { nameAl: 'Akullore (çdo zgjedhje - e Mesme 2 toptha)', nameEn: 'Ice Cream of Any Choice (Mid 2 Scoops)', price: '160 L' },
+    { nameAl: 'Akullore e Madhe (3 toptha)', nameEn: 'Ice Cream Large (3 Scoops)', price: '240 L' },
+    { nameAl: 'Akullore e Mesme (2 toptha)', nameEn: 'Ice Cream Mid (2 Scoops)', price: '160 L' },
     { nameAl: 'Luleshtrydhe', nameEn: 'Strawberry', price: '350 L' },
     { nameAl: 'Flo Waffles', nameEn: 'Flo Waffles', price: '350 L' },
     { nameAl: 'Flo (akullore pop)', nameEn: 'Flo (Ice cream pop)', price: '350 L' },
   ];
 
-  const piadinesAndSandwiches = [
+  const piadines: MenuItemData[] = [
     { nameAl: 'Piadine Roll Pulë Parmigiano', nameEn: 'Piadine Roll Chicken Parmesan', price: '350 L' },
     { nameAl: 'Piadine Roll Vegjetariane', nameEn: 'Piadine Roll Vegetarian', price: '300 L' },
     { nameAl: 'Piadine Roll Pikante', nameEn: 'Piadine Roll Spicy', price: '280 L' },
@@ -214,35 +303,39 @@ const Menu = () => {
     { nameAl: 'Tost Flo', nameEn: 'Flo Toast', price: '180 L' },
   ];
 
+  // ── Photo gallery assignments (all 26 images distributed by section) ─
+  const iceCoffeePhotos  = [img9897, img9898, img9902, img9908, img9908_2];
+  const floDessertsPhotos = [img9888, img9889, img9891, img9912, img9914, img9925, img9926, img9931, img9935];
+  const specialPhotos    = [img9929, img9929_2, img9938, img9940, img9950, img9951, img9955, img9969, img9971, img9985];
+  const specialitiesPhotos = [img9847, img9860];
+
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-[#FBF7F2]">
       <Navbar />
 
       <AnimatePresence mode="wait">
         {!showMenu ? (
-          /* Menu Cover */
-          <motion.section 
+          /* ── Cover page ──────────────────────────────────────────── */
+          <motion.section
             key="cover"
             className="min-h-screen flex flex-col items-center justify-center relative pt-20"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Cover Image */}
-            <motion.div 
+            <motion.div
               className="w-full max-w-md mx-auto px-4"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-              <img 
-                src={menuCover} 
-                alt="Pasticeri FLO Menu Cover" 
-                className="w-full h-auto rounded-lg shadow-2xl"
+              <img
+                src={menuCover}
+                alt="Pasticeri FLO Menu Cover"
+                className="w-full h-auto rounded-2xl shadow-2xl"
               />
             </motion.div>
 
-            {/* Button */}
             <motion.button
               onClick={() => setShowMenu(true)}
               className="mt-8 group flex flex-col items-center gap-2"
@@ -252,277 +345,210 @@ const Menu = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="bg-cafe-brown text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:bg-cafe-brown/90 transition-colors text-lg">
+              <span className="bg-cafe-brown text-white font-semibold px-8 py-4 rounded-full shadow-lg text-lg">
                 Kliko për më shumë
               </span>
               <motion.div
                 animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <ChevronDown className="text-cafe-brown" size={28} />
               </motion.div>
             </motion.button>
           </motion.section>
         ) : (
-          /* Full Menu */
+          /* ── Full menu ───────────────────────────────────────────── */
           <motion.div
             key="menu"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Header */}
-            <section className="pt-28 pb-12 bg-gradient-to-br from-cafe-brown via-cafe-brown to-cafe-brown/80 text-white relative overflow-hidden">
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 left-10 w-32 h-32 border-2 border-white rounded-full"></div>
-                <div className="absolute bottom-10 right-10 w-48 h-48 border-2 border-white rounded-full"></div>
-                <div className="absolute top-1/2 left-1/3 w-24 h-24 border border-white rounded-full"></div>
+            {/* Page header */}
+            <section className="pt-24 pb-10 bg-cafe-brown text-white relative overflow-hidden">
+              <div className="absolute inset-0 opacity-10 pointer-events-none">
+                <div className="absolute top-6 left-6 w-28 h-28 border border-white rounded-full" />
+                <div className="absolute bottom-6 right-6 w-44 h-44 border border-white rounded-full" />
+                <div className="absolute top-1/2 left-1/2 w-20 h-20 border border-white rounded-full -translate-x-1/2 -translate-y-1/2" />
               </div>
               <div className="container mx-auto px-4 text-center relative z-10">
                 <motion.div
+                  className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-5"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }}
-                  className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6"
+                  transition={{ duration: 0.5 }}
                 >
-                  <Coffee size={18} />
+                  <Coffee size={16} />
                   <span className="text-sm font-medium">Cafe & Pasticeri FLO</span>
                 </motion.div>
-                <motion.h1 
-                  className="font-serif text-4xl md:text-6xl font-bold mb-4"
-                  initial={{ opacity: 0, y: 20 }}
+                <motion.h1
+                  className="font-serif text-4xl md:text-5xl font-bold mb-3"
+                  initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
                 >
                   {t('menuTitle')}
                 </motion.h1>
-                <motion.p 
-                  className="text-xl text-white/80 italic max-w-md mx-auto"
-                  initial={{ opacity: 0, y: 20 }}
+                <motion.p
+                  className="text-white/70 italic"
+                  initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
                 >
                   {t('menuSubtitle')}
                 </motion.p>
               </div>
             </section>
 
-            {/* Menu Content */}
-            <section className="py-12 md:py-20">
-              <div className="container mx-auto px-4">
-                <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                  
-                  {/* Kafeteria */}
-                  <MenuSection 
-                    icon={Coffee} 
-                    title="Kafeteria" 
-                    titleEn="Coffee & Tea"
-                    backgroundImage={menuCoffee}
-                    delay={0}
+            {/* Sticky category navigation */}
+            <div className="sticky top-16 z-40 bg-[#FBF7F2]/95 backdrop-blur-sm border-b border-stone-200 shadow-sm">
+              <div
+                className="flex gap-2 overflow-x-auto px-4 py-3"
+                style={{ scrollbarWidth: 'none' }}
+              >
+                {NAV.map(({ id, label, Icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => { setActiveTab(id); scrollTo(id); }}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 border ${
+                      activeTab === id
+                        ? 'bg-cafe-brown text-white border-cafe-brown shadow-md'
+                        : 'bg-white text-stone-600 border-stone-200 hover:border-cafe-brown/40 hover:text-cafe-brown'
+                    }`}
                   >
-                    {kafeteria.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* Iced Coffee */}
-                  <MenuSection 
-                    icon={Coffee} 
-                    title="Kafe me Akull" 
-                    titleEn="Iced Coffee"
-                    backgroundImage={menuDrinks}
-                    delay={0.05}
-                  >
-                    {iceCoffee.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* Refreshing Drinks */}
-                  <MenuSection 
-                    icon={Coffee} 
-                    title="Pije Freskuese" 
-                    titleEn="Refreshing Drinks"
-                    backgroundImage={drinks}
-                    delay={0.1}
-                  >
-                    {refreshing.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* Beer */}
-                  <MenuSection 
-                    icon={Wine} 
-                    title="Birra" 
-                    titleEn="Beer"
-                    backgroundImage={beers}
-                    delay={0.15}
-                  >
-                    {beer.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* Energy Drinks */}
-                  <MenuSection 
-                    icon={Wine} 
-                    title="Pije Energjike" 
-                    titleEn="Energy Drinks"
-                    backgroundImage={energyDrinksImg}
-                    delay={0.2}
-                  >
-                    {energyDrinks.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* Cocktails */}
-                  <MenuSection 
-                    icon={Wine} 
-                    title="Kokteje" 
-                    titleEn="Cocktails"
-                    backgroundImage={cocktailsImg}
-                    delay={0.25}
-                  >
-                    {cocktails.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* FLO Desserts */}
-                  <MenuSection 
-                    icon={Cake} 
-                    title="Ëmbëlsira FLO" 
-                    titleEn="FLO Desserts"
-                    backgroundImage={specialty}
-                    delay={0.3}
-                  >
-                    {floDesserts.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* Special Desserts - uses menuDessert image */}
-                  <MenuSection 
-                    icon={Sparkles} 
-                    title="Ëmbëlsira Speciale" 
-                    titleEn="Special Desserts"
-                    backgroundImage={menuDessert}
-                    delay={0.35}
-                  >
-                    {specialDesserts.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* FLO Specialities - uses menuSpecial (fruit cup) image */}
-                  <MenuSection 
-                    icon={IceCream} 
-                    title="Specialitetet FLO" 
-                    titleEn="FLO Specialities"
-                    backgroundImage={menuSpecial}
-                    delay={0.4}
-                  >
-                    {floSpecialities.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                  {/* Piadine & Sandwiches - centered on croissant */}
-                  <MenuSection 
-                    icon={Sandwich} 
-                    title="Piadine & Sandwich" 
-                    titleEn="Piadine & Sandwich"
-                    backgroundImage={menuFood}
-                    delay={0.45}
-                    darkerOverlay
-                    bgPosition="center 30%"
-                  >
-                    {piadinesAndSandwiches.map((item, index) => (
-                      <MenuItem
-                        key={item.nameAl}
-                        nameAl={item.nameAl}
-                        nameEn={item.nameEn}
-                        price={item.price}
-                        index={index}
-                      />
-                    ))}
-                  </MenuSection>
-
-                </div>
+                    <Icon size={13} />
+                    {label}
+                  </button>
+                ))}
               </div>
-            </section>
+            </div>
 
-            {/* CTA Section */}
-            <motion.section 
-              className="py-16 bg-gradient-to-r from-cafe-brown to-cafe-brown/90 text-white text-center relative overflow-hidden"
+            {/* ── Menu sections ──────────────────────────────────────── */}
+            <div className="container mx-auto px-4 py-10 max-w-2xl space-y-10">
+
+              {/* ── Drinks ─────────────────────────────────────────── */}
+              <DrinkSection
+                id="kafeteria"
+                Icon={Coffee}
+                title="Kafeteria"
+                titleEn="Coffee & Tea"
+                hero={menuCoffee}
+                items={kafeteria}
+              />
+
+              <VisualSection
+                id="ice-coffee"
+                Icon={Coffee}
+                title="Kafe me Akull"
+                titleEn="Iced Coffee"
+                photos={iceCoffeePhotos}
+                items={iceCoffee}
+              />
+
+              <DrinkSection
+                id="refreshing"
+                Icon={Wine}
+                title="Pije Freskuese"
+                titleEn="Refreshing Drinks"
+                hero={drinks}
+                items={refreshing}
+              />
+
+              <DrinkSection
+                id="beer"
+                Icon={Wine}
+                title="Birra"
+                titleEn="Beer"
+                hero={beers}
+                items={beer}
+              />
+
+              <DrinkSection
+                id="energy"
+                Icon={Zap}
+                title="Pije Energjike"
+                titleEn="Energy Drinks"
+                hero={energyDrinksImg}
+                items={energyDrinks}
+              />
+
+              <DrinkSection
+                id="cocktails"
+                Icon={Wine}
+                title="Kokteje"
+                titleEn="Cocktails"
+                hero={cocktailsImg}
+                items={cocktails}
+              />
+
+              {/* ── Divider ─────────────────────────────────────────── */}
+              <motion.div
+                className="flex items-center gap-4"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <div className="flex-1 h-px bg-stone-300" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                  Krijimet Tona · Our Creations
+                </span>
+                <div className="flex-1 h-px bg-stone-300" />
+              </motion.div>
+
+              {/* ── Desserts ─────────────────────────────────────────── */}
+              <VisualSection
+                id="flo-desserts"
+                Icon={Cake}
+                title="Ëmbëlsira FLO"
+                titleEn="FLO Desserts"
+                photos={floDessertsPhotos}
+                items={floDesserts}
+              />
+
+              <VisualSection
+                id="special"
+                Icon={Sparkles}
+                title="Ëmbëlsira Speciale"
+                titleEn="Special Desserts"
+                photos={specialPhotos}
+                items={specialDesserts}
+              />
+
+              <VisualSection
+                id="specialities"
+                Icon={IceCream}
+                title="Specialitetet FLO"
+                titleEn="FLO Specialities"
+                photos={specialitiesPhotos}
+                items={floSpecialities}
+              />
+
+              {/* ── Food ─────────────────────────────────────────────── */}
+              <DrinkSection
+                id="food"
+                Icon={Sandwich}
+                title="Piadine & Sandwich"
+                titleEn="Piadine & Sandwich"
+                hero={menuFood}
+                items={piadines}
+              />
+
+            </div>
+
+            {/* CTA section */}
+            <motion.section
+              className="py-16 bg-cafe-brown text-white text-center relative overflow-hidden"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="absolute inset-0 opacity-5">
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,white_1px,transparent_1px)] bg-[length:30px_30px]"></div>
+              <div className="absolute inset-0 opacity-5 pointer-events-none">
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,white_1px,transparent_1px)] bg-[length:30px_30px]" />
               </div>
               <div className="container mx-auto px-4 relative z-10">
-                <h2 className="font-serif text-2xl md:text-3xl font-bold mb-4">
-                  {t('visitUs')}
-                </h2>
+                <h2 className="font-serif text-2xl md:text-3xl font-bold mb-4">{t('visitUs')}</h2>
                 <p className="text-white/80 mb-6 max-w-md mx-auto">{t('visitUsDesc')}</p>
                 <motion.a
                   href="https://maps.app.goo.gl/QLSunbDXLVkK6Pv38"
